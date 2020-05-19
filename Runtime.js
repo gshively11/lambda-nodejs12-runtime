@@ -49,6 +49,9 @@ module.exports = class Runtime {
    * Wait for the next invocation, process it, and schedule the next iteration.
    */
   async handleOnce() {
+    if (this.handler.warmup && typeof this.handler.warmup === "function") {
+      await this.handler.warmup();
+    }
     let { bodyJson, headers } = await this.client.nextInvocation();
     let invokeContext = new InvokeContext(headers);
     invokeContext.updateLoggingContext();
